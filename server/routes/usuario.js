@@ -7,12 +7,20 @@ const _ = require('underscore') //_.pick propiedades validas de un modelo
 
 const Usuario = require('../models/usuario')
 
+const { verificaToken, verificaAdmin_Role } = require('../middlewares/autenticacion');
 
-app.get('/usuario', function(req, res) {
+
+app.get('/usuario', verificaToken, (req, res) => {
 
     //Parametros opcionales siempre caen en el metodo query
     //son enviados atravez de la url (?) y se concatenan con &
     //ejemplo localhost:3000/usuario?desde=5&limite=2
+
+    return res.json({
+        usuario: req.usuario,
+        nombre: req.usuario.nombre,
+        email: req.usuario.email
+    })
 
     let desde = req.query.desde; //obtiene el parametro opcional y lo devuelve como string
     desde = Number(desde); //parsea el string a Number
@@ -43,7 +51,7 @@ app.get('/usuario', function(req, res) {
         })
 })
 
-app.post('/usuario', function(req, res) {
+app.post('/usuario', [verificaToken, verificaAdmin_Role], function(req, res) {
 
     let body = req.body;
 
@@ -87,7 +95,7 @@ app.post('/usuario', function(req, res) {
     // })
 })
 
-app.put('/usuario/:id', function(req, res) {
+app.put('/usuario/:id', [verificaToken, verificaAdmin_Role], function(req, res) {
 
     let id = req.params.id;
     let body = _.pick(req.body, ['nombre', 'email', 'img', 'role', 'estado']); //campos validos para actualizar
@@ -114,7 +122,7 @@ app.put('/usuario/:id', function(req, res) {
 })
 
 
-app.delete('/usuario/:id', function(req, res) {
+app.delete('/usuario/:id', [verificaToken, verificaAdmin_Role], function(req, res) {
 
     let id = req.params.id;
     let body = _.pick(req.body, ['estado'])
