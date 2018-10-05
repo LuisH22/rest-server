@@ -9,7 +9,7 @@ const client = new OAuth2Client(process.env.CLIENT_ID);
 
 const Usuario = require('../models/usuario')
 
-module.exports = app;
+// module.exports = app;
 
 
 
@@ -23,7 +23,7 @@ app.post('/login', (req, res) => {
             return res.status(500).json({
                 ok: false,
                 err
-            })
+            });
 
         }
 
@@ -33,7 +33,7 @@ app.post('/login', (req, res) => {
                 err: {
                     messsage: 'Usuario o contraseña invalidos'
                 }
-            })
+            });
         }
 
         if (!bcrypt.compareSync(body.password, usuarioBD.password)) {
@@ -42,7 +42,7 @@ app.post('/login', (req, res) => {
                 err: {
                     messsage: 'Usuario o contraseña invalidos'
                 }
-            })
+            });
         }
 
         let token = jwt.sign({
@@ -53,10 +53,10 @@ app.post('/login', (req, res) => {
             ok: true,
             usuario: usuarioBD,
             token
-        })
-    })
+        });
+    });
 
-})
+});
 
 
 //Configuraciones de google
@@ -91,15 +91,15 @@ app.post('/google', async(req, res) => {
             return res.status(403).json({
                 ok: false,
                 err: e
-            })
-        })
+            });
+        });
 
     Usuario.findOne({ emai: googleUser.email }, (err, usuarioDB) => {
         if (err) {
             return res.status(500).json({
                 ok: false,
                 err
-            })
+            });
         }
 
         if (usuarioDB) {
@@ -111,7 +111,7 @@ app.post('/google', async(req, res) => {
                     err: {
                         messsage: 'Debe de usar su autenticacion normal'
                     }
-                })
+                });
             } else {
                 let token = jwt.sign({
                     usuario: usuarioDB
@@ -121,7 +121,7 @@ app.post('/google', async(req, res) => {
                     ok: true,
                     usuario: usuarioDB,
                     token
-                })
+                });
             }
 
         } else {
@@ -139,7 +139,7 @@ app.post('/google', async(req, res) => {
                     return res.status(500).json({
                         ok: false,
                         err
-                    })
+                    });
                 }
 
                 let token = jwt.sign({
@@ -150,16 +150,16 @@ app.post('/google', async(req, res) => {
                     ok: true,
                     usuario: usuarioDB,
                     token
-                })
+                });
 
-            })
+            });
 
         }
-    })
+    });
 
     // res.json({
     //     usuario: googleUser
     // })
-})
+});
 
-//module.exports = app;
+module.exports = app;
