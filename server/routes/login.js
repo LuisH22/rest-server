@@ -102,7 +102,7 @@ app.post('/google', async(req, res) => {
             });
         };
 
-        if (!usuarioDB) {
+        if (usuarioDB) {
 
             if (usuarioDB.google === false) {
 
